@@ -71,6 +71,8 @@ class Character extends Mappeable {
         "url": url,
         "created": created.toIso8601String(),
     };
+
+    
 }
 
 enum Gender { MALE, FEMALE, UNKNOWN, GENDERLESS }

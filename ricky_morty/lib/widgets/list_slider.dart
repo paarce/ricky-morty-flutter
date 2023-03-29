@@ -81,7 +81,7 @@ class _ListSliderState extends State<ListSlider> {
               controller: scrollController,
               scrollDirection: Axis.horizontal,
               itemCount: widget.characters.length,
-              itemBuilder: (context, index) => _ItemPoster(character: widget.characters[index],),
+              itemBuilder: (context, index) => _CharacterPoster(character: widget.characters[index],),
             ),
           )
         ],
@@ -90,9 +90,9 @@ class _ListSliderState extends State<ListSlider> {
   }
 }
 
-class _ItemPoster extends StatelessWidget {
+class _CharacterPoster extends StatelessWidget {
     final Character character;
-    const _ItemPoster({Key? key, required this.character}) : super(key: key);
+    const _CharacterPoster({Key? key, required this.character}) : super(key: key);
   
   @override
   Widget build(BuildContext context) {
@@ -104,7 +104,7 @@ class _ItemPoster extends StatelessWidget {
         children: [
 
           GestureDetector(
-            onTap: () => Navigator.pushNamed(context, 'detail', arguments: 'detail-instance'),
+            onTap: () => Navigator.pushNamed(context, 'detail', arguments: character),
             child: FadeInImage(
               placeholder: const AssetImage('assets/no-image.jpg'),
               image: NetworkImage(character.image),

@@ -46,6 +46,13 @@ class APIResponse<T extends Mappeable> {
         info: Info.fromJson(json["info"]),
         results: List<T>.from(json["results"].map((x) => Episode.fromJson(x))),
     );
+
+    factory APIResponse.fromEpisodeFilteredRawJson(String str) => APIResponse.fromEpisodeFilteredJson(json.decode(str));
+
+    factory APIResponse.fromEpisodeFilteredJson(List<dynamic> list) => APIResponse(
+        info: null,
+        results: List<T>.from(list.map((x) => Episode.fromJson(x))),
+    );
 }
 
 class Info {
