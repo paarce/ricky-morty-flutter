@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:ricky_morty/helpers/models_helper.dart';
 import 'package:ricky_morty/providers/character_provider.dart';
 import 'package:ricky_morty/providers/episodes_provider.dart';
+import 'package:ricky_morty/screens/search/search_home_delegate.dart';
 import 'package:ricky_morty/widgets/card_swiper.dart';
 import 'package:ricky_morty/widgets/list_slider.dart';
 
@@ -19,8 +20,10 @@ class HomeScreen extends StatelessWidget {
     return  Scaffold(
       appBar: AppBar(
         title: const Text('Home'),
-        actions: const [
-          IconButton(onPressed: null, icon: Icon(Icons.search_outlined))
+        actions:  [
+          IconButton(
+            onPressed: () => showSearch(context: context, delegate: HomeSearchDelegate()), 
+            icon: const Icon(Icons.search_outlined))
         ],
       ),
       body: Column(

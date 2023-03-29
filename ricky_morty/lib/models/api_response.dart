@@ -35,10 +35,6 @@ class APIResponse<T extends Mappeable> {
     );
 
 
-
-
-
-
     // Episodes
     factory APIResponse.fromEpisodeRawJson(String str) => APIResponse.fromEpisodeJson(json.decode(str));
 
@@ -65,8 +61,8 @@ class Info {
 
     int count;
     int pages;
-    String next;
-    dynamic prev;
+    String? next;
+    dynamic? prev;
 
     factory Info.fromRawJson(String str) => Info.fromJson(json.decode(str));
 
