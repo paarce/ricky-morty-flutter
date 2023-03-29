@@ -1,9 +1,5 @@
-
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
 import 'package:ricky_morty/models/character_response.dart';
-import 'package:ricky_morty/models/episode_response.dart';
 import 'package:ricky_morty/services/api_request.dart';
 
 class CharacterProvider extends ChangeNotifier {
@@ -35,7 +31,7 @@ class CharacterProvider extends ChangeNotifier {
   void filterCharacter(String episodeName, List<String> ids) async {
     String idsWithCommas = ids.join(',');
 
-    final data = await _service.fetchData('/character/$idsWithCommas', _page);
+    final data = await _service.fetchData('/character/$idsWithCommas', page: _page );
     final model = APIResponseCharacters.fromCharacterFilteredRawJson(data);
     
     onDisplayItems = model.results;
@@ -48,7 +44,7 @@ class CharacterProvider extends ChangeNotifier {
   void _getCharacter() async {
     if (_isLoading ) { return; }
     _isLoading = true;
-    final data = await _service.fetchData('/character', _page);
+    final data = await _service.fetchData('/character', page: _page );
     final model = APIResponseCharacters.fromCharacterRawJson(data);
     
     onDisplayItems = [...onDisplayItems, ...model.results];

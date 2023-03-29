@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:ricky_morty/helpers/models_helper.dart';
 import 'package:ricky_morty/providers/character_provider.dart';
 import 'package:ricky_morty/providers/episodes_provider.dart';
 import 'package:ricky_morty/widgets/card_swiper.dart';
@@ -27,11 +28,8 @@ class HomeScreen extends StatelessWidget {
           CardSwiper(
             episodes: episodeProvider.onDisplayItems,
             filterCharacters: (episode) { // This should be in another place
-              var ids = episode.characters.map((e) {
-                var uri = Uri.parse(e);
-                return uri.pathSegments.last;
-              });
-              characterProvider.filterCharacter(episode.name, ids.toList());
+              
+              characterProvider.filterCharacter(episode.name, ModelHelper.getIdsFrom(episode.characters));
             },
           ),
           ListSlider(

@@ -1,9 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
+
+import 'package:ricky_morty/helpers/models_helper.dart';
 import 'package:provider/provider.dart';
-import 'package:ricky_morty/providers/episodes_provider.dart';
+
 import 'package:ricky_morty/models/character_response.dart';
-import 'package:ricky_morty/models/episode_response.dart';
+import 'package:ricky_morty/models/location_response.dart';
+
+import 'package:ricky_morty/providers/episodes_provider.dart';
+import 'package:ricky_morty/providers/location_provider.dart';
+
 import 'package:ricky_morty/widgets/widgets.dart';
+import 'package:ricky_morty/screens/detail/episodes_list_widget.dart';
 
 class DetailScreen extends StatelessWidget {
 
@@ -17,7 +25,7 @@ class DetailScreen extends StatelessWidget {
   Widget build(BuildContext context) {
 
     final character = ModalRoute.of(context)?.settings.arguments as Character;
-
+    final episodeProvider = Provider.of<EpisodeProvider>(context);
     return  Scaffold(
       body: CustomScrollView(
         slivers: [
@@ -25,15 +33,27 @@ class DetailScreen extends StatelessWidget {
           SliverList(
             delegate: SliverChildListDelegate.fixed([
                 _BasicInformation(character: character),
-                const SizedBox(height: 20),
-                const Text('Episodes', style: TextStyle(fontSize: 25),),
-                const _EpisodesGrid(),
-                const SizedBox(height: 20),
-                const Text('Location', style: TextStyle(fontSize: 25),),
 
-                const SizedBox(height: 20),
-                const Text('Origin', style: TextStyle(fontSize: 25),),
+                const SizedBox(height: 24),
+                Container(
+                  padding: const EdgeInsets.only(left: 16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: const [
+                      Text('Episodes', style: TextStyle(fontSize: 25),),
+                    ]
+                  ),
+                ),
 
+                EpisodesGrid(ids: ModelHelper.getIdsFrom(character.episode), provider: episodeProvider),
+                const SizedBox(height: 24),
+                if (character.location.url.isNotEmpty)
+                  _LocationWidget(title: "Location", locationId: character.location.id(),),
+
+                const SizedBox(height: 24),
+                if (character.origin.url.isNotEmpty)
+                  _LocationWidget(title: "Origin", locationId: character.origin.id(),),
+                 
             ])
           )
         ],
@@ -62,7 +82,13 @@ class _CustomAppBar extends StatelessWidget {
       floating: false,
       flexibleSpace: FlexibleSpaceBar(
         centerTitle: true,
-        title: Text(name),
+        titlePadding: const EdgeInsets.all(0),
+        title: Container(
+          width: double.infinity,
+          alignment: Alignment.bottomCenter,
+          color: Colors.black12,
+          child: Text(name)
+        ),
         background: FadeInImage(
           placeholder: const AssetImage('assets/loading.gif'),
           image: NetworkImage(imageURL),
@@ -116,59 +142,49 @@ class _BasicInformation extends StatelessWidget {
   }
 }
 
-class _EpisodesGrid extends StatelessWidget {
-   
-  const _EpisodesGrid({Key? key}) : super(key: key);
+class _LocationWidget extends StatelessWidget {
+  
+  final String title;
+  final String locationId;
+  const _LocationWidget(
+    {
+      Key? key,
+      required this.title,
+      required this.locationId
+    }) : super(key: key);
   
   @override
   Widget build(BuildContext context) {
 
-    final episodeProvider = Provider.of<EpisodeProvider>(context);
+    final locationProvider = Provider.of<LocationProvider>(context);
 
     return Container(
-      height: 150,
-      color: Colors.red,
-      child: ListView.builder(
-        // controller: scrollController,
-        scrollDirection: Axis.horizontal,
-        itemCount: episodeProvider.onDisplayItems.length,
-        itemBuilder: (context, index) => _EpisodePoster(name: episodeProvider.onDisplayItems[index].name),
-      ),
-    );
-  }
-}
-
-class _EpisodePoster extends StatelessWidget {
-    final String name;
-    const _EpisodePoster({Key? key, required this.name}) : super(key: key);
-  
-  @override
-  Widget build(BuildContext context) {
-
-    return Container(
-      width: 130,
-      margin: const EdgeInsets.all(10),
+      padding: const EdgeInsets.only(left: 16),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(16),
-            child: Container(
-              color: Colors.grey,
-              padding: const EdgeInsets.all(24),
-              height: 120,
-              width: 120,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    name,
-                    maxLines: 4,
-                  ),
-                ],
-              ),
-            )
-          ),
-        ]
+
+          Text(title, style: const TextStyle(fontSize: 25),),
+          const SizedBox(height: 8),
+
+          FutureBuilder(
+            future: locationProvider.getLocationBy(locationId),
+            builder: (context, snapshot) {
+              
+              Location? location = snapshot.data;
+
+              if (location == null) {
+                return Container(
+                  height: 150,
+                  child: const CupertinoActivityIndicator(),
+                );
+              }
+
+              return Text('${location.name} - ${location.type}');
+              
+            },
+          )
+        ],
       ),
     );
   }

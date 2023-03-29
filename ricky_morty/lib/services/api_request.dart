@@ -4,13 +4,18 @@ class APIRequest {
 
   final String _baseUrl = "rickandmortyapi.com";
 
-  Future<String> fetchData(endpoint, int page) async {
+  Future<String> fetchData(endpoint, {int? page}) async {
     
-    var url = Uri.https(_baseUrl, "/api$endpoint", {
-      'page': '$page'
-    });
+    Map<String, dynamic> params = {};
+    
+    if (page != null) {
+      params['page'] = '$page';
+    }
+
+    var url = Uri.https(_baseUrl, "/api$endpoint", params);
   
     final res = await http.get(url);
     return res.body;
   }
+
 }

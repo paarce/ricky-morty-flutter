@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:ricky_morty/providers/character_provider.dart';
 import 'package:ricky_morty/providers/episodes_provider.dart';
+import 'package:ricky_morty/providers/location_provider.dart';
 import 'package:ricky_morty/screens/screens.dart';
 import 'package:provider/provider.dart';
 
@@ -18,6 +19,7 @@ class AppState extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (_) => EpisodeProvider(), lazy: false),
         ChangeNotifierProvider(create: (_) => CharacterProvider(), lazy: false),
+        ChangeNotifierProvider(create: (_) => LocationProvider()),
       ],
       child: const MyApp(),
     );

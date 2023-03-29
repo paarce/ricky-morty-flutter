@@ -5,6 +5,7 @@
 
 import 'dart:convert';
 
+import 'package:ricky_morty/helpers/models_helper.dart';
 import 'package:ricky_morty/models/api_response.dart';
 
 typedef APIResponseCharacters = APIResponse<Character>;
@@ -31,8 +32,8 @@ class Character extends Mappeable {
     Species species;
     String type;
     Gender gender;
-    Location origin;
-    Location location;
+    LocationSummary origin;
+    LocationSummary location;
     String image;
     List<String> episode;
     String url;
@@ -49,8 +50,8 @@ class Character extends Mappeable {
         species: speciesValues.map[json["species"]]!,
         type: json["type"],
         gender: genderValues.map[json["gender"]]!,
-        origin: Location.fromJson(json["origin"]),
-        location: Location.fromJson(json["location"]),
+        origin: LocationSummary.fromJson(json["origin"]),
+        location: LocationSummary.fromJson(json["location"]),
         image: json["image"],
         episode: List<String>.from(json["episode"].map((x) => x)),
         url: json["url"],
@@ -84,8 +85,8 @@ final genderValues = EnumValues({
     "unknown": Gender.UNKNOWN
 });
 
-class Location {
-    Location({
+class LocationSummary {
+    LocationSummary({
         required this.name,
         required this.url,
     });
@@ -93,11 +94,11 @@ class Location {
     String name;
     String url;
 
-    factory Location.fromRawJson(String str) => Location.fromJson(json.decode(str));
+    factory LocationSummary.fromRawJson(String str) => LocationSummary.fromJson(json.decode(str));
 
     String toRawJson() => json.encode(toJson());
 
-    factory Location.fromJson(Map<String, dynamic> json) => Location(
+    factory LocationSummary.fromJson(Map<String, dynamic> json) => LocationSummary(
         name: json["name"],
         url: json["url"],
     );
@@ -106,6 +107,8 @@ class Location {
         "name": name,
         "url": url,
     };
+
+    String id() => ModelHelper.getIdFrom(url);
 }
 
 enum Species { HUMAN, ALIEN, HUMANOID, POOPYBUTTHOLE,
